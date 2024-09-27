@@ -1,0 +1,29 @@
+name: Build and Package
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Theos
+      run: |
+        brew install ldid xz
+        git clone --recursive https://github.com/theos/theos.git $THEOS
+        
+    - name: Build Package
+      run: |
+        make package
+        
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: WeChatAutoAnswer.deb
+        path: packages/*.deb
